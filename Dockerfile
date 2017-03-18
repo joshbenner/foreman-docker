@@ -23,7 +23,8 @@ RUN wget -q https://deb.theforeman.org/pubkey.gpg -O- | apt-key add - && \
     echo "deb http://deb.theforeman.org/ xenial $FOREMAN_RELEASE" > /etc/apt/sources.list.d/foreman.list && \
     echo "deb http://deb.theforeman.org/ plugins $FOREMAN_RELEASE" >> /etc/apt/sources.list.d/foreman.list && \
     apt-get update && \
-    apt-get install -y foreman=$FOREMAN_PACKAGE_VERSION \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+      foreman=$FOREMAN_PACKAGE_VERSION \
       foreman-sqlite3 foreman-mysql2 foreman-postgresql && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
