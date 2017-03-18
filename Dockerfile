@@ -1,6 +1,7 @@
-FROM ruby:2.3
+FROM ubuntu:16.04
 
-ENV FOREMAN_VERSION=1.14.2 \
+ENV FOREMAN_RELEASE=1.14 \
+    FOREMAN_PACKAGE_VERSION=1.14.2-1 \
     DOCKERIZE_VERSION=v0.3.0 \
     DB_TYPE=sqlite3 \
     DB_HOST=localhost \
@@ -10,34 +11,21 @@ ENV FOREMAN_VERSION=1.14.2 \
     DB_POOL=5
 
 # Install dockerize
-RUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+RUN apt-get update && \
+    apt-get install -y ca-certificates wget && \
+    wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
     tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
-    rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
-
-# Install NodeJS
-RUN wget -q -O - https://deb.nodesource.com/setup_7.x | bash - && \
-    apt-get install -y nodejs && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Foreman
-RUN apt-get update && \
-    apt-get install -y nodejs libpq-dev build-essential libxml2-dev \
-      libxslt1-dev zlib1g-dev libssl-dev libreadline-dev libvirt-dev \
-      libmysqlclient-dev libsqlite3-dev && \
-    git clone https://github.com/theforeman/foreman.git --depth 1 -b $FOREMAN_VERSION && \
-    cd foreman && \
-    cp config/settings.yaml.example config/settings.yaml && \
-    cp config/database.yml.example config/database.yml && \
-    bundle install --without therubyracer test --path vendor && \
-    npm install && \
-    RAILS_ENV=production bundle exec rake assets:precompile locale:pack webpack:compile && \
-    apt-get purge -y libpq-dev build-essential libxml2-dev libxslt1-dev \
-      zlib1g-dev libssl-dev libreadline-dev libvirt-dev libmysqlclient-dev \
-      libsqlite3-dev && \
-    apt-get autoremove -y --purge && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN wget -q https://deb.theforeman.org/pubkey.gpg -O- | apt-key add - && \
+    echo "deb http://deb.theforeman.org/ xenial $FOREMAN_RELEASE" > /etc/apt/sources.list.d/foreman.list && \
+    echo "deb http://deb.theforeman.org/ plugins $FOREMAN_RELEASE" >> /etc/apt/sources.list.d/foreman.list && \
+    apt-get update && \
+    apt-get install -y foreman=$FOREMAN_PACKAGE_VERSION \
+      foreman-sqlite3 foreman-mysql2 foreman-postgresql && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY files/ /
 
