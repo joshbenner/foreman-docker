@@ -1,0 +1,7 @@
+production:
+  adapter: {{ .Env.DB_TYPE }}
+  host: {{ .Env.DB_HOST }}
+  database: {{ .Env.DB_NAME }}
+  username: {{ .Env.DB_USER }}
+  password: "{{ .Env.DB_PASS }}"
+  pool: {{ .Env.DB_POOL }}

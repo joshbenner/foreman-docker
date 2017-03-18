@@ -1,0 +1,6 @@
+version: '2'
+services:
+  foreman:
+    build: .
+    ports:
+      - "80:80"

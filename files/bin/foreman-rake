@@ -1,0 +1,4 @@
+#!/bin/bash -e
+
+cd /foreman
+RAILS_ENV=production bundle exec rake $@
