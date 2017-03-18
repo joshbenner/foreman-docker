@@ -1,8 +1,10 @@
-FROM ubuntu:16.04
+FROM phusion/passenger-ruby23:0.9.20
 
 ENV FOREMAN_RELEASE=1.14 \
     FOREMAN_PACKAGE_VERSION=1.14.2-1 \
     DOCKERIZE_VERSION=v0.3.0 \
+    DOMAIN=localdomain.net \
+    FQDN=localhost.localdomain.net \
     DB_TYPE=sqlite3 \
     DB_HOST=localhost \
     DB_NAME=/var/lib/foreman/db/production.sqlite3 \
@@ -27,8 +29,10 @@ RUN wget -q https://deb.theforeman.org/pubkey.gpg -O- | apt-key add - && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
       foreman=$FOREMAN_PACKAGE_VERSION \
       foreman-sqlite3 foreman-mysql2 foreman-postgresql && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    rm -f /etc/service/nginx/down /etc/nginx/sites-enabled/default
 
 COPY files/ /
 
-ENTRYPOINT ["/entrypoint.sh"]
+# ENTRYPOINT ["/entrypoint.sh"]
+CMD ["/sbin/my_init"]
