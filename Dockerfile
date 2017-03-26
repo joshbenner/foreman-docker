@@ -11,7 +11,8 @@ ENV FOREMAN_RELEASE=1.14 \
     DB_USER=foreman \
     DB_PASS= \
     DB_POOL=5 \
-    ENCRYPTION_KEY=3694a6ccd583cd3fb7c6e60c178883b632553287
+    ENCRYPTION_KEY=3694a6ccd583cd3fb7c6e60c178883b632553287 \
+    ADMIN_PASS=changeme
 
 # Install dockerize
 RUN apt-get update && \

@@ -8,4 +8,5 @@ dockerize \
 
 if [ "$DB_TYPE" = "postgresql" ]; then
   dockerize -wait tcp://$DB_HOST:5432
+  echo "Connected to Postgres!"
 fi
