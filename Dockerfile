@@ -34,5 +34,4 @@ RUN wget -q https://deb.theforeman.org/pubkey.gpg -O- | apt-key add - && \
 
 COPY files/ /
 
-# ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/sbin/my_init"]
