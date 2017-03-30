@@ -12,7 +12,9 @@ ENV FOREMAN_RELEASE=1.14 \
     DB_PASS= \
     DB_POOL=5 \
     ENCRYPTION_KEY=3694a6ccd583cd3fb7c6e60c178883b632553287 \
-    ADMIN_PASS=changeme
+    ADMIN_PASS=changeme \
+    ANSIBLE_ENABLED=false \
+    ANSIBLE_REPO_URL=
 
 # Install dockerize
 RUN apt-get update && \
@@ -32,6 +34,12 @@ RUN wget -q https://deb.theforeman.org/pubkey.gpg -O- | apt-key add - && \
       foreman-sqlite3 foreman-mysql2 foreman-postgresql && \
     apt-get clean && rm -rf /var/lib/apt/lists/* && \
     rm -f /etc/service/nginx/down /etc/nginx/sites-enabled/default
+
+# Install Ansible from source
+RUN apt-get update && apt-get install -yq python-pip && \
+    git clone --depth 1 https://github.com/ansible/ansible.git /opt/ansible && \
+    pip install /opt/ansible && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY files/ /
 

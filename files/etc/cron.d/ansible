@@ -1,0 +1,3 @@
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+#Ansible: Run Ansible
+*/15 * * * * foreman /usr/share/foreman/scripts/queue_ansible cron all

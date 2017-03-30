@@ -1,0 +1,37 @@
+#!/bin/bash
+set -x
+
+FOREMAN_URL="localhost"
+FOREMAN_SSL_VERIFY="0"
+ANSIBLE_DIR="/usr/share/foreman/ansible"
+KEY_FILE="/usr/share/foreman/ansible/ssh.key"
+
+EVENT="$1"
+HOST="$2"
+SSH_ARGS="-o ProxyCommand=none -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+
+set +x
+if [ $EVENT = "after_provision" ]; then
+  echo "Sleeping for 60 seconds while host reboots..."
+  sleep 60
+fi
+set -x
+
+export GIT_SSH_COMMAND="ssh -i $KEY_FILE $SSH_ARGS"
+if [ ! -d "$ANSIBLE_DIR/.git" ]; then
+  git clone --recursive $ANSIBLE_REPO_URL $ANSIBLE_DIR
+else
+  cd $ANSIBLE_DIR
+  git pull
+fi
+
+cd $ANSIBLE_DIR
+
+# Install dependencies.
+ansible-galaxy install -r requirements.yml
+
+# Converge configuration.
+ansible-playbook site.yml --key-file=$KEY_FILE --limit=$HOST --ssh-common-args="$SSH_ARGS"
+
+set +x
+echo "Ansible run complete"

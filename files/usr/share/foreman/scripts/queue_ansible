@@ -1,0 +1,14 @@
+#!/bin/bash
+
+SELF_DIR="$(dirname "$(readlink -f "$0")")"
+SCRIPT="$SELF_DIR/run_ansible"
+LOGFILE='/var/log/foreman/ansible.log'
+
+# <&0  - Redirect stdin to called script
+# 2>&1 - Combine stderr with stdout
+# ts   - Prepend each line with timestamp
+# >>   - Append output to logfile
+CMD="($SCRIPT $1 $2 2>&1 | ts '[%Y-%m-%d %H:%M:%S]') >> $LOGFILE"
+
+# Queue execution using task-spooler.
+tsp -n sh -c "$CMD"
