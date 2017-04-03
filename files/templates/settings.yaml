@@ -32,9 +32,9 @@
 :domain: '{{ .Env.DOMAIN }}'
 :fqdn: '{{ .Env.FQDN }}'
 {{ if isTrue .Env.SSL }}
-:ssl_certificate: /client_cert.pem
-:ssl_ca_file: /ca.pem
-:ssl_priv_key: /client_key.pem
+:ssl_certificate: /certs/client_cert.pem
+:ssl_ca_file: /certs/ca.pem
+:ssl_priv_key: /certs/client_key.pem
 {{ end }}
 # Log settings for the current environment can be adjusted by adding them
 # here. It is also possible to override settings per environment. See
