@@ -5,6 +5,7 @@ ENV FOREMAN_RELEASE=1.14 \
     DOCKERIZE_VERSION=v0.3.0 \
     DOMAIN=localdomain.net \
     FQDN=localhost.localdomain.net \
+    SSL=false \
     DB_TYPE=sqlite3 \
     DB_HOST=localhost \
     DB_NAME=/var/lib/foreman/db/production.sqlite3 \

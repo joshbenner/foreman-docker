@@ -31,7 +31,11 @@
 # system you may want to change to setup your project on your local machine.
 :domain: '{{ .Env.DOMAIN }}'
 :fqdn: '{{ .Env.FQDN }}'
-
+{{ if isTrue .Env.SSL }}
+:ssl_certificate: /client_cert.pem
+:ssl_ca_file: /ca.pem
+:ssl_priv_key: /client_key.pem
+{{ end }}
 # Log settings for the current environment can be adjusted by adding them
 # here. It is also possible to override settings per environment. See
 # logging.yaml for more details and examples.
